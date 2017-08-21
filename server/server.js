@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
   res.send({
     name: 'Training Diary API',
-    version: '1.0.0',
+    version: '0.1.0',
   });
 });
 
