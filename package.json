@@ -1,0 +1,27 @@
+{
+  "name": "training-diary-api",
+  "version": "0.1.0",
+  "description": "Training diary for saving information about your progress",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scholtysek-software/training-diary-api.git"
+  },
+  "keywords": [
+    "training",
+    "diary"
+  ],
+  "author": "Patryk Scholtysek <patryk@scholtysek-software.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scholtysek-software/training-diary-api/issues"
+  },
+  "homepage": "https://github.com/scholtysek-software/training-diary-api#readme",
+  "dependencies": {
+    "body-parser": "1.17.2",
+    "express": "4.15.4"
+  }
+}
