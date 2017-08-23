@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
   res.send({
     name: 'Training Diary API',
-    version: '0.1.0',
+    version: '0.2.1',
   });
 });
 

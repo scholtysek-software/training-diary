@@ -49,14 +49,15 @@ const createSeries = (req, res) => {
         return res.status(404).send();
       }
 
-      training.exercises.forEach((exercise) => {
-        if (exercise._id.toHexString() === exerciseId) {
-          exercise.series.push({
-            order: req.body.order,
-            repetition: req.body.repetition,
-            load: req.body.load,
-          });
-        }
+      const exercises = training.exercises.filter(ex => ex._id.toHexString() === exerciseId);
+      if (!exercises.length) {
+        return res.status(404).send();
+      }
+
+      exercises[0].series.push({
+        order: req.body.order,
+        repetition: req.body.repetition,
+        load: req.body.load,
       });
 
       training.save()
