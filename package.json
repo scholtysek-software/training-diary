@@ -30,5 +30,10 @@
     "express": "4.15.4",
     "mongodb": "2.2.31",
     "mongoose": "4.11.7"
+  },
+  "devDependencies": {
+    "eslint": "3.18.0",
+    "eslint-config-airbnb-base": "11.1.2",
+    "eslint-plugin-import": "2.2.0"
   }
 }
