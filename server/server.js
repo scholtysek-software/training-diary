@@ -25,7 +25,10 @@ app.get('/trainings/:trainingId', trainingRoutes.getTraining);
 app.delete('/trainings/:trainingId', trainingRoutes.deleteTraining);
 
 app.post('/trainings/:trainingId/exercises', trainingRoutes.createExercise);
+app.delete('/trainings/:trainingId/exercises/:exerciseId', trainingRoutes.deleteExercise);
+
 app.post('/trainings/:trainingId/exercises/:exerciseId/series', trainingRoutes.createSeries);
+app.delete('/trainings/:trainingId/exercises/:exerciseId/series/:seriesId', trainingRoutes.deleteSeries);
 
 app.get('/trainings', trainingRoutes.listTrainings);
 
