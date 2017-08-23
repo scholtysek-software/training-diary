@@ -1,6 +1,6 @@
 {
   "name": "training-diary-api",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Training diary for saving information about your progress",
   "main": "server/server.js",
   "scripts": {

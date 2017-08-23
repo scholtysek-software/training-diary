@@ -92,10 +92,30 @@ const getTraining = (req, res) => {
     .catch(e => res.status(400).send({ error: e.message }));
 };
 
+const deleteTraining = (req, res) => {
+  const trainingId = req.params.trainingId;
+
+  if (!ObjectID.isValid(trainingId)) {
+    return res.status(404).send();
+  }
+
+  Training.findByIdAndRemove(trainingId)
+    .then((training) => {
+      if (!training) {
+        return res.status(404).send();
+      }
+
+      res.send({ training });
+    }).catch((e) => {
+      res.status(400).send({ error: e.message });
+    });
+};
+
 module.exports = {
   createTraining,
   createExercise,
   createSeries,
   listTrainings,
   getTraining,
+  deleteTraining,
 };

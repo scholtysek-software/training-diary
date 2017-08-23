@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
   res.send({
     name: 'Training Diary API',
-    version: '0.2.1',
+    version: '0.2.2',
   });
 });
 
@@ -21,7 +21,9 @@ app.get('/', (req, res) => {
  * Trainings routes
  */
 app.post('/trainings', trainingRoutes.createTraining);
-app.get('/trainings/:trainingId', trainingRoutes.getTraining)
+app.get('/trainings/:trainingId', trainingRoutes.getTraining);
+app.delete('/trainings/:trainingId', trainingRoutes.deleteTraining);
+
 app.post('/trainings/:trainingId/exercises', trainingRoutes.createExercise);
 app.post('/trainings/:trainingId/exercises/:exerciseId/series', trainingRoutes.createSeries);
 
