@@ -1,7 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+require('./config/config');
 require('./db/mongoose');
+
 const trainingRoutes = require('./routes/training');
 
 const app = express();
@@ -24,9 +26,8 @@ app.post('/trainings/:trainingId/exercises/:exerciseId/series', trainingRoutes.c
 
 app.get('/training', trainingRoutes.listTrainings);
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server is waiting for the connection on port ${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server is waiting for the connection on port ${process.env.PORT}`);
 });
 
 module.exports = { app };
