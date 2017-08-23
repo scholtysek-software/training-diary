@@ -16,11 +16,11 @@ app.get('/', (req, res) => {
 });
 
 /**
- * Training routes
+ * Trainings routes
  */
-app.post('/training', trainingRoutes.createTraining);
-app.post('/training/:trainingId/exercises', trainingRoutes.createExercise);
-app.post('/training/:trainingId/exercises/:exerciseId/series', trainingRoutes.createSeries);
+app.post('/trainings', trainingRoutes.createTraining);
+app.post('/trainings/:trainingId/exercises', trainingRoutes.createExercise);
+app.post('/trainings/:trainingId/exercises/:exerciseId/series', trainingRoutes.createSeries);
 
 app.get('/training', trainingRoutes.listTrainings);
 
