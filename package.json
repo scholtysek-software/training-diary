@@ -1,6 +1,6 @@
 {
   "name": "training-diary-api",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Training diary for saving information about your progress",
   "main": "server/server.js",
   "scripts": {
@@ -29,6 +29,7 @@
   "dependencies": {
     "body-parser": "1.17.2",
     "express": "4.15.4",
+    "lodash": "4.17.4",
     "mongodb": "2.2.31",
     "mongoose": "4.11.7"
   },

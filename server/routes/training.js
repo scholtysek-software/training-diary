@@ -1,6 +1,8 @@
 /* eslint-disable consistent-return */
-const { Training } = require('./../models/training');
 const { ObjectID } = require('mongodb');
+const { Training } = require('./../models/training');
+const _ = require('lodash');
+
 
 const createTraining = (req, res) => {
   const training = new Training({
@@ -150,6 +152,7 @@ const deleteSeries = (req, res) => {
 
   Training.findById(trainingId)
     .then((training) => {
+      // @todo: Fix! Will fail if training is not found
       const exercises = training.exercises.filter(ex => ex._id.toHexString() === exerciseId);
 
       if (!training || !exercises.length) {
@@ -172,6 +175,90 @@ const deleteSeries = (req, res) => {
     });
 };
 
+const updateTraining = (req, res) => {
+  const trainingId = req.params.trainingId;
+  const body = _.pick(req.body, ['date']);
+
+  if (!ObjectID.isValid(trainingId)) {
+    return res.status(404).send();
+  }
+
+  Training.findByIdAndUpdate(trainingId, { $set: body }, { new: true })
+    .then((training) => {
+      if (!training) {
+        return res.status(404).send();
+      }
+
+      res.send({ training });
+    })
+    .catch(e => res.status(400).send({ error: e.message }));
+};
+
+const updateExercises = (req, res) => {
+  const trainingId = req.params.trainingId;
+  const exerciseId = req.params.exerciseId;
+  const body = _.pick(req.body, ['name', 'order']);
+
+  if (!ObjectID.isValid(trainingId) || !ObjectID.isValid(exerciseId)) {
+    return res.status(404).send();
+  }
+
+  Training.findById(trainingId)
+    .then((training) => {
+      if (!training) {
+        return res.status(404).send();
+      }
+
+      const exercises = training.exercises.filter(ex => ex._id.toHexString() === exerciseId);
+      if (!exercises.length) {
+        return res.status(404).send();
+      }
+
+      Object.assign(exercises[0], body);
+      training.save()
+        .then(doc => res.send({ training: doc }))
+        .catch(e => res.status(400).send({ error: e.message }));
+    })
+    .catch(e => res.status(400).send({ error: e.message }));
+};
+
+const updateSeries = (req, res) => {
+  const trainingId = req.params.trainingId;
+  const exerciseId = req.params.exerciseId;
+  const seriesId = req.params.seriesId;
+  const body = _.pick(req.body, ['load', 'repetition', 'order']);
+
+  if (!ObjectID.isValid(trainingId)
+    || !ObjectID.isValid(exerciseId)
+    || !ObjectID.isValid(seriesId)) {
+    return res.status(404).send();
+  }
+
+  Training.findById(trainingId)
+    .then((training) => {
+      if (!training) {
+        return res.status(404).send();
+      }
+
+      const exercises = training.exercises.filter(ex => ex._id.toHexString() === exerciseId);
+      if (!exercises.length) {
+        return res.status(404).send();
+      }
+
+      const series = exercises[0].series.filter(s => s._id.toHexString() === seriesId);
+      if (!series.length) {
+        return res.status(404).send();
+      }
+
+
+      Object.assign(series[0], body);
+      training.save()
+        .then(doc => res.send({ training: doc }))
+        .catch(e => res.status(400).send({ error: e.message }));
+    })
+    .catch(e => res.status(400).send({ error: e.message }));
+};
+
 module.exports = {
   createTraining,
   createExercise,
@@ -181,4 +268,7 @@ module.exports = {
   deleteTraining,
   deleteExercise,
   deleteSeries,
+  updateTraining,
+  updateExercises,
+  updateSeries,
 };
