@@ -22,6 +22,8 @@ app.post('/training', trainingRoutes.createTraining);
 app.post('/training/:trainingId/exercises', trainingRoutes.createExercise);
 app.post('/training/:trainingId/exercises/:exerciseId/series', trainingRoutes.createSeries);
 
+app.get('/training', trainingRoutes.listTrainings);
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is waiting for the connection on port ${port}`)

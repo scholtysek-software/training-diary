@@ -65,9 +65,17 @@ const createSeries = (req, res) => {
     })
 };
 
+const listTrainings = (req, res) => {
+  Training.find()
+    .then((trainings) => {
+      res.send({trainings});
+    })
+    .catch(e => res.status(400).send({error: e.message}));
+};
 
 module.exports = {
   createTraining,
   createExercise,
-  createSeries
+  createSeries,
+  listTrainings
 };
