@@ -19,6 +19,8 @@ app.get('/', (req, res) => {
  * Training routes
  */
 app.post('/training', trainingRoutes.createTraining);
+app.post('/training/:trainingId/exercises', trainingRoutes.createExercise);
+app.post('/training/:trainingId/exercises/:exerciseId/series', trainingRoutes.createSeries);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
