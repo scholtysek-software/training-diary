@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Series  = mongoose.Schema({
+const Series = mongoose.Schema({
   order: {
     type: Number,
     required: true,
@@ -12,7 +12,7 @@ const Series  = mongoose.Schema({
   load: {
     type: Number,
     required: true,
-  }
+  },
 });
 
 const Exercise = mongoose.Schema({
@@ -20,24 +20,24 @@ const Exercise = mongoose.Schema({
     type: String,
     required: true,
     minlength: 1,
-    trim: true
+    trim: true,
   },
   order: {
     type: Number,
     required: true,
   },
-  series: [ Series ]
+  series: [Series],
 });
 
-const Training = mongoose.model('Training', {
+const Training = mongoose.model('Training', mongoose.Schema({
   date: {
     type: Number,
-    required: true
+    required: true,
   },
-  exercises: [ Exercise ],
+  exercises: [Exercise],
   duration: {
-    type: Number
-  }
-});
+    type: Number,
+  },
+}));
 
 module.exports = { Training };

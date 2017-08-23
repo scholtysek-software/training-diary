@@ -7,7 +7,8 @@
       "no-console": "off",
       "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
       "no-alert": "off",
-      "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*-spec.js"]}]
+      "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*-spec.js"]}],
+      "no-underscore-dangle":"off"
     },
     "env": {
       "browser": true,

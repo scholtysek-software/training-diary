@@ -1,14 +1,15 @@
+/* eslint-disable consistent-return */
 const { Training } = require('./../models/training');
 const { ObjectID } = require('mongodb');
 
 const createTraining = (req, res) => {
   const training = new Training({
-    date: req.body.date
+    date: req.body.date,
   });
 
   training.save().then((doc) => {
     res.send(doc);
-  }).catch(e => res.status(400).send({error: e.message}))
+  }).catch(e => res.status(400).send({ error: e.message }));
 };
 
 const createExercise = (req, res) => {
@@ -29,10 +30,9 @@ const createExercise = (req, res) => {
     });
     training.save()
       .then(doc => res.send(doc))
-      .catch(e => res.status(400).send({error: e.message}));
-
+      .catch(e => res.status(400).send({ error: e.message }));
   }).catch((e) => {
-    res.status(400).send({error: e.message});
+    res.status(400).send({ error: e.message });
   });
 };
 
@@ -61,21 +61,21 @@ const createSeries = (req, res) => {
 
       training.save()
         .then(doc => res.send(doc))
-        .catch(e => res.status(400).send({error: e.message}));
-    })
+        .catch(e => res.status(400).send({ error: e.message }));
+    });
 };
 
 const listTrainings = (req, res) => {
   Training.find()
     .then((trainings) => {
-      res.send({trainings});
+      res.send({ trainings });
     })
-    .catch(e => res.status(400).send({error: e.message}));
+    .catch(e => res.status(400).send({ error: e.message }));
 };
 
 module.exports = {
   createTraining,
   createExercise,
   createSeries,
-  listTrainings
+  listTrainings,
 };

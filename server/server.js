@@ -26,7 +26,7 @@ app.get('/training', trainingRoutes.listTrainings);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Server is waiting for the connection on port ${port}`)
+  console.log(`Server is waiting for the connection on port ${port}`);
 });
 
 module.exports = { app };
