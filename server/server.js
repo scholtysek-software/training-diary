@@ -21,10 +21,11 @@ app.get('/', (req, res) => {
  * Trainings routes
  */
 app.post('/trainings', trainingRoutes.createTraining);
+app.get('/trainings/:trainingId', trainingRoutes.getTraining)
 app.post('/trainings/:trainingId/exercises', trainingRoutes.createExercise);
 app.post('/trainings/:trainingId/exercises/:exerciseId/series', trainingRoutes.createSeries);
 
-app.get('/training', trainingRoutes.listTrainings);
+app.get('/trainings', trainingRoutes.listTrainings);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is waiting for the connection on port ${process.env.PORT}`);

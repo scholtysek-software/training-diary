@@ -74,9 +74,28 @@ const listTrainings = (req, res) => {
     .catch(e => res.status(400).send({ error: e.message }));
 };
 
+const getTraining = (req, res) => {
+  const trainingId = req.params.trainingId;
+
+  if (!ObjectID.isValid(trainingId)) {
+    res.status(404).send();
+  }
+
+  Training.findById(trainingId)
+    .then((training) => {
+      if (!training) {
+        return res.status(400).send();
+      }
+
+      res.send({ training });
+    })
+    .catch(e => res.status(400).send({ error: e.message }));
+};
+
 module.exports = {
   createTraining,
   createExercise,
   createSeries,
   listTrainings,
+  getTraining,
 };
