@@ -20,20 +20,20 @@ app.get('/', (req, res) => {
 /**
  * Trainings routes
  */
-app.post('/trainings', trainingRoutes.createTraining);
-app.get('/trainings/:trainingId', trainingRoutes.getTraining);
-app.delete('/trainings/:trainingId', trainingRoutes.deleteTraining);
-app.patch('/trainings/:trainingId', trainingRoutes.updateTraining);
+app.post('/api/trainings', trainingRoutes.createTraining);
+app.get('/api/trainings/:trainingId', trainingRoutes.getTraining);
+app.delete('/api/trainings/:trainingId', trainingRoutes.deleteTraining);
+app.patch('/api/trainings/:trainingId', trainingRoutes.updateTraining);
 
-app.post('/trainings/:trainingId/exercises', trainingRoutes.createExercise);
-app.delete('/trainings/:trainingId/exercises/:exerciseId', trainingRoutes.deleteExercise);
-app.patch('/trainings/:trainingId/exercises/:exerciseId', trainingRoutes.updateExercises);
+app.post('/api/trainings/:trainingId/exercises', trainingRoutes.createExercise);
+app.delete('/api/trainings/:trainingId/exercises/:exerciseId', trainingRoutes.deleteExercise);
+app.patch('/api/trainings/:trainingId/exercises/:exerciseId', trainingRoutes.updateExercises);
 
-app.post('/trainings/:trainingId/exercises/:exerciseId/series', trainingRoutes.createSeries);
-app.delete('/trainings/:trainingId/exercises/:exerciseId/series/:seriesId', trainingRoutes.deleteSeries);
-app.patch('/trainings/:trainingId/exercises/:exerciseId/:series/:seriesId', trainingRoutes.updateSeries);
+app.post('/api/trainings/:trainingId/exercises/:exerciseId/series', trainingRoutes.createSeries);
+app.delete('/api/trainings/:trainingId/exercises/:exerciseId/series/:seriesId', trainingRoutes.deleteSeries);
+app.patch('/api/trainings/:trainingId/exercises/:exerciseId/:series/:seriesId', trainingRoutes.updateSeries);
 
-app.get('/trainings', trainingRoutes.listTrainings);
+app.get('/api/trainings', trainingRoutes.listTrainings);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is waiting for the connection on port ${process.env.PORT}`);

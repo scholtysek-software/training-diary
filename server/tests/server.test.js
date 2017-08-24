@@ -29,12 +29,12 @@ beforeEach((done) => {
     .then(() => done());
 });
 
-describe('POST /trainings', () => {
+describe('POST /api/trainings', () => {
   it('should create a new training', (done) => {
     const date = new Date().getTime();
 
     request(app)
-      .post('/trainings')
+      .post('/api/trainings')
       .send({ date })
       .expect(200)
       .expect((res) => {
@@ -59,7 +59,7 @@ describe('POST /trainings', () => {
 
   it('should not create training with invalid body data', (done) => {
     request(app)
-      .post('/trainings')
+      .post('/api/trainings')
       .send({})
       .expect(400)
       .expect((res) => {
@@ -81,14 +81,14 @@ describe('POST /trainings', () => {
   });
 });
 
-describe('POST /trainings/:id/exercises', () => {
+describe('POST /api/trainings/:id/exercises', () => {
   it('should create a new exercise', (done) => {
     const trainingId = trainingFixtures[0]._id.toHexString();
     const name = 'Exercise 1';
     const order = 1;
 
     request(app)
-      .post(`/trainings/${trainingId}/exercises`)
+      .post(`/api/trainings/${trainingId}/exercises`)
       .send({ name, order })
       .expect(200)
       .expect((res) => {
@@ -116,7 +116,7 @@ describe('POST /trainings/:id/exercises', () => {
     const trainingId = trainingFixtures[1]._id.toHexString();
 
     request(app)
-      .post(`/trainings/${trainingId}/exercises`)
+      .post(`/api/trainings/${trainingId}/exercises`)
       .send({})
       .expect(400)
       .expect((res) => {
@@ -139,7 +139,7 @@ describe('POST /trainings/:id/exercises', () => {
 
   it('should not add exercise when invalid training ID is provided', (done) => {
     request(app)
-      .post(`/trainings/${new ObjectID().toHexString()}/exercises`)
+      .post(`/api/trainings/${new ObjectID().toHexString()}/exercises`)
       .send({})
       .expect(404)
       .end((err) => {
@@ -154,7 +154,7 @@ describe('POST /trainings/:id/exercises', () => {
   });
 });
 
-describe('POST /trainings/:id/exercises/:id/series', () => {
+describe('POST /api/trainings/:id/exercises/:id/series', () => {
   it('should create a new series', (done) => {
     const trainingId = trainingFixtures[0]._id.toHexString();
     const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
@@ -163,7 +163,7 @@ describe('POST /trainings/:id/exercises/:id/series', () => {
     const order = 1;
 
     request(app)
-      .post(`/trainings/${trainingId}/exercises/${exerciseId}/series`)
+      .post(`/api/trainings/${trainingId}/exercises/${exerciseId}/series`)
       .send({ load, order, repetition })
       .expect(200)
       .expect((res) => {
@@ -194,7 +194,7 @@ describe('POST /trainings/:id/exercises/:id/series', () => {
     const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
 
     request(app)
-      .post(`/trainings/${trainingId}/exercises/${exerciseId}/series`)
+      .post(`/api/trainings/${trainingId}/exercises/${exerciseId}/series`)
       .send({})
       .expect(400)
       .expect((res) => {
@@ -219,7 +219,7 @@ describe('POST /trainings/:id/exercises/:id/series', () => {
     const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
 
     request(app)
-      .post(`/trainings/${new ObjectID().toHexString()}/exercises/${exerciseId}/series`)
+      .post(`/api/trainings/${new ObjectID().toHexString()}/exercises/${exerciseId}/series`)
       .send({})
       .expect(404)
       .end((err) => {
@@ -237,7 +237,7 @@ describe('POST /trainings/:id/exercises/:id/series', () => {
     const trainingId = trainingFixtures[0]._id.toHexString();
 
     request(app)
-      .post(`/trainings/${trainingId}/exercises/${new ObjectID().toHexString()}/series`)
+      .post(`/api/trainings/${trainingId}/exercises/${new ObjectID().toHexString()}/series`)
       .send({})
       .expect(404)
       .end((err) => {
