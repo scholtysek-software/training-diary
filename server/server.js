@@ -10,7 +10,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
   res.send({
     name: 'Training Diary API',
     version: '0.3.0',
