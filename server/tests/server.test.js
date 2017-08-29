@@ -292,3 +292,29 @@ describe('GET /api/trainings', () => {
       .end(done);
   });
 });
+
+describe('GET /api/trainings/:trainingId', () => {
+  it('should return training', (done) => {
+    request(app)
+      .get(`/api/trainings/${trainingFixtures[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.training.date).toBe(trainingFixtures[0].date);
+      })
+      .end(done);
+  });
+
+  it('should return 404 if training not found', (done) => {
+    request(app)
+      .get(`/api/trainings/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 for faulty ObjectId', (done) => {
+    request(app)
+      .get('/api/trainings/random-string')
+      .expect(404)
+      .end(done);
+  });
+});
