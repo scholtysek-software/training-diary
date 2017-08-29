@@ -14,6 +14,12 @@ const trainingFixtures = [
         _id: new ObjectID(),
         name: 'Exercise 1',
         order: 1,
+        series: [{
+          _id: new ObjectID(),
+          order: 1,
+          load: 15,
+          repetition: 10,
+        }],
       },
     ],
   },
@@ -105,7 +111,7 @@ describe('POST /api/trainings/:id/exercises', () => {
           .then((trainings) => {
             expect(trainings.length).toBe(1);
             expect(trainings[0].exercises[0].name).toBe(name);
-            expect(trainings[0].exercises[0].series).toEqual([]);
+            expect(trainings[0].exercises[0].series.length).toEqual(1);
             done();
           })
           .catch(e => done(e));
@@ -181,9 +187,9 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
       .send({ load, order, repetition })
       .expect(200)
       .expect((res) => {
-        expect(res.body.exercises[0].series[0].load).toBe(load);
-        expect(res.body.exercises[0].series[0].order).toBe(order);
-        expect(res.body.exercises[0].series[0].repetition).toBe(repetition);
+        expect(res.body.exercises[0].series[1].load).toBe(load);
+        expect(res.body.exercises[0].series[1].order).toBe(order);
+        expect(res.body.exercises[0].series[1].repetition).toBe(repetition);
       })
       .end((err) => {
         if (err) {
@@ -194,9 +200,9 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
         Training.find({ _id: trainingId })
           .then((trainings) => {
             expect(trainings.length).toBe(1);
-            expect(trainings[0].exercises[0].series[0].load).toBe(load);
-            expect(trainings[0].exercises[0].series[0].order).toBe(order);
-            expect(trainings[0].exercises[0].series[0].repetition).toBe(repetition);
+            expect(trainings[0].exercises[0].series[1].load).toBe(load);
+            expect(trainings[0].exercises[0].series[1].order).toBe(order);
+            expect(trainings[0].exercises[0].series[1].repetition).toBe(repetition);
             done();
           })
           .catch(e => done(e));
@@ -212,7 +218,7 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
       .send({})
       .expect(400)
       .expect((res) => {
-        expect(res.body.error).toBe('Training validation failed: exercises.0.series.0.load: Path `load` is required., exercises.0.series.0.repetition: Path `repetition` is required., exercises.0.series.0.order: Path `order` is required.');
+        expect(res.body.error).toBe('Training validation failed: exercises.0.series.1.load: Path `load` is required., exercises.0.series.1.repetition: Path `repetition` is required., exercises.0.series.1.order: Path `order` is required.');
       })
       .end((err) => {
         if (err) {
@@ -222,7 +228,7 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
 
         Training.find({ _id: trainingId })
           .then((trainings) => {
-            expect(trainings[0].exercises[0].series.length).toBe(0);
+            expect(trainings[0].exercises[0].series.length).toBe(1);
             done();
           })
           .catch(e => done(e));
@@ -314,6 +320,89 @@ describe('GET /api/trainings/:trainingId', () => {
   it('should return 404 for faulty ObjectId', (done) => {
     request(app)
       .get('/api/trainings/random-string')
+      .expect(404)
+      .end(done);
+  });
+});
+
+describe('DELETE /api/trainings/:trainingId', () => {
+  it('should remove a training', (done) => {
+    const trainingId = trainingFixtures[1]._id.toHexString();
+
+    request(app)
+      .delete(`/api/trainings/${trainingId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.training._id).toBe(trainingId);
+      })
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        Training.findById(trainingId)
+          .then((training) => {
+            expect(training).toNotExist();
+            done();
+          }).catch(e => done(e));
+      });
+  });
+
+  it('should return 404 if training not found', (done) => {
+    request(app)
+      .delete(`/api/trainings/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 if object id is invalid', (done) => {
+    request(app)
+      .delete('/api/trainings/random-string')
+      .expect(404)
+      .end(done);
+  });
+});
+
+describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId', () => {
+  it('should remove an exercise', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+
+    request(app)
+      .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.training._id).toBe(trainingId);
+      })
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        Training.findById(trainingId)
+          .then((training) => {
+            expect(training.exercises.length).toEqual(0);
+            done();
+          }).catch(e => done(e));
+      });
+  });
+
+  it('should return 404 if exercise not found', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+
+    request(app)
+      .delete(`/api/trainings/${trainingId}/exercises/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 if object id is invalid', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+
+    request(app)
+      .delete(`/api/trainings/${trainingId}/exercises/random-string`)
       .expect(404)
       .end(done);
   });
