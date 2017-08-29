@@ -112,6 +112,21 @@ describe('POST /api/trainings/:id/exercises', () => {
       });
   });
 
+  it('should not add exercise when faulty training ID is provided', (done) => {
+    request(app)
+      .post('/api/trainings/random-string/exercises')
+      .send({})
+      .expect(404)
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        done();
+      });
+  });
+
   it('should not add exercise with invalid body data', (done) => {
     const trainingId = trainingFixtures[1]._id.toHexString();
 
@@ -150,7 +165,6 @@ describe('POST /api/trainings/:id/exercises', () => {
 
         done();
       });
-
   });
 });
 
@@ -230,7 +244,6 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
 
         done();
       });
-
   });
 
   it('should not add series when invalid exercise ID is provided', (done) => {
@@ -248,6 +261,34 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
 
         done();
       });
+  });
 
+  it('should not add series when faulty exercise ID is provided', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+
+    request(app)
+      .post(`/api/trainings/${trainingId}/exercises/random-string/series`)
+      .send({})
+      .expect(404)
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        done();
+      });
+  });
+});
+
+describe('GET /api/trainings', () => {
+  it('should get all trainings', (done) => {
+    request(app)
+      .get('/api/trainings')
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.trainings.length).toBe(2);
+      })
+      .end(done);
   });
 });

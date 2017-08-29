@@ -7,6 +7,7 @@
     "start": "node server/server.js",
     "test": "export NODE_ENV=test && mocha server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'",
+    "test-cc": "export NODE_ENV=test && nyc -r html mocha server/**/*.test.js",
     "build": "del-cli frontend/public/js/app && webpack --config frontend/webpack.config.dev.js --progress --profile --watch",
     "watch": "nodemon server/server.js & del-cli frontend/public/js/app && webpack --config frontend/webpack.config.dev.js --progress --profile --watch"
   },
@@ -68,6 +69,7 @@
     "html-loader": "^0.4.4",
     "mocha": "3.5.0",
     "nodemon": "1.11.0",
+    "nyc": "11.1.0",
     "raw-loader": "^0.5.1",
     "supertest": "3.0.0",
     "ts-loader": "^2.0.3",
