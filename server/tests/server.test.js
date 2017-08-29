@@ -407,3 +407,50 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId', () => {
       .end(done);
   });
 });
+
+describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId', () => {
+  it('should remove series', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const seriesId = trainingFixtures[0].exercises[0].series[0]._id.toHexString();
+
+    request(app)
+      .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${seriesId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.training._id).toBe(trainingId);
+      })
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        Training.findById(trainingId)
+          .then((training) => {
+            expect(training.exercises[0].series.length).toEqual(0);
+            done();
+          }).catch(e => done(e));
+      });
+  });
+
+  it('should return 404 if series not found', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+
+    request(app)
+      .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 if object id is invalid', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+
+    request(app)
+      .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/random-string`)
+      .expect(404)
+      .end(done);
+  });
+});
