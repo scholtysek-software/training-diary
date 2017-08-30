@@ -454,3 +454,106 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesI
       .end(done);
   });
 });
+
+describe('PATCH /api/trainings/:trainingId', () => {
+  it('should update a training', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+    const date = 123123123;
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}`)
+      .send({ date })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.training.date).toBe(date);
+      })
+      .end(done);
+  });
+
+  it('should return 404 when training not found', (done) => {
+    request(app)
+      .patch(`/api/trainings/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 when invalid object id is provided', (done) => {
+    request(app)
+      .patch('/api/trainings/random-string')
+      .expect(404)
+      .end(done);
+  });
+});
+
+describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId', () => {
+  it('should update an exercise', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const name = 'Exercise 123';
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}`)
+      .send({ name })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.training.exercises[0].name).toBe(name);
+      })
+      .end(done);
+  });
+
+  it('should return 404 when exercise not found', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 when invalid object id is provided', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/random-string`)
+      .expect(404)
+      .end(done);
+  });
+});
+
+describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId', () => {
+  it('should update series', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const seriesId = trainingFixtures[0].exercises[0].series[0]._id.toHexString();
+    const load = 1500;
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${seriesId}`)
+      .send({ load })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.training.exercises[0].series[0].load).toBe(load);
+      })
+      .end(done);
+  });
+
+  it('should return 404 when series not found', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${new ObjectID().toHexString()}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 when invalid object id is provided', (done) => {
+    const trainingId = trainingFixtures[0]._id.toHexString();
+    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/random-string`)
+      .expect(404)
+      .end(done);
+  });
+});
