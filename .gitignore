@@ -60,3 +60,4 @@ typings/
 # WebStorm files
 .idea/
 /.nyc_output/
+/server/config/params.json

@@ -1,9 +1,7 @@
+const params = require('./params.json');
+
 const env = process.env.NODE_ENV || 'development';
 
-if (env === 'development') {
-  process.env.PORT = 3000;
-  process.env.MONGODB_URI = 'mongodb://localhost:27017/TrainingDiary';
-} else if (env === 'test') {
-  process.env.PORT = 3000;
-  process.env.MONGODB_URI = 'mongodb://localhost:27017/TrainingDiaryTest';
+if (env === 'development' || env === 'test') {
+  Object.assign(process.env, params[env]);
 }
