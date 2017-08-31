@@ -7,8 +7,10 @@ const cookieParser = require('cookie-parser');
 
 require('./config/config');
 require('./db/mongoose');
+const { authenticate } = require('./middleware/authenticate');
 
 const trainingRoutes = require('./routes/training');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
@@ -55,6 +57,14 @@ app.delete('/api/trainings/:trainingId/exercises/:exerciseId/series/:seriesId', 
 app.patch('/api/trainings/:trainingId/exercises/:exerciseId/:series/:seriesId', trainingRoutes.updateSeries);
 
 app.get('/api/trainings', trainingRoutes.listTrainings);
+
+/**
+ * User routes
+ */
+app.post('/api/users', userRoutes.createUser);
+app.get('/api/users/me', authenticate, userRoutes.getUser);
+app.post('/api/users/login', userRoutes.login);
+app.delete('/api/users/me/token', authenticate, userRoutes.deleteToken);
 
 // catch 404 and forward to error handler
 app.use((req, res) => res.render('index'));
