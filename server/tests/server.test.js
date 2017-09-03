@@ -4,36 +4,11 @@ const { ObjectID } = require('mongodb');
 
 const { app } = require('./../server');
 const { Training } = require('./../models/training');
+const { User } = require('./../models/user');
+const { trainings, populateTrainings, users, populateUsers } = require('./seed/seed');
 
-const trainingFixtures = [
-  {
-    _id: new ObjectID(),
-    date: 1234,
-    exercises: [
-      {
-        _id: new ObjectID(),
-        name: 'Exercise 1',
-        order: 1,
-        series: [{
-          _id: new ObjectID(),
-          order: 1,
-          load: 15,
-          repetition: 10,
-        }],
-      },
-    ],
-  },
-  {
-    _id: new ObjectID(),
-    date: 12345,
-  },
-];
-
-beforeEach((done) => {
-  Training.remove({})
-    .then(() => Training.insertMany(trainingFixtures))
-    .then(() => done());
-});
+beforeEach(populateUsers);
+beforeEach(populateTrainings);
 
 describe('POST /api/trainings', () => {
   it('should create a new training', (done) => {
@@ -53,10 +28,10 @@ describe('POST /api/trainings', () => {
         }
 
         Training.find({ date })
-          .then((trainings) => {
-            expect(trainings.length).toBe(1);
-            expect(trainings[0].date).toBe(date);
-            expect(trainings[0].exercises).toEqual([]);
+          .then((trainingsDocs) => {
+            expect(trainingsDocs.length).toBe(1);
+            expect(trainingsDocs[0].date).toBe(date);
+            expect(trainingsDocs[0].exercises).toEqual([]);
             done();
           })
           .catch(e => done(e));
@@ -78,8 +53,8 @@ describe('POST /api/trainings', () => {
         }
 
         Training.find()
-          .then((trainings) => {
-            expect(trainings.length).toBe(2);
+          .then((trainingsDocs) => {
+            expect(trainingsDocs.length).toBe(2);
             done();
           })
           .catch(e => done(e));
@@ -89,7 +64,7 @@ describe('POST /api/trainings', () => {
 
 describe('POST /api/trainings/:id/exercises', () => {
   it('should create a new exercise', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
     const name = 'Exercise 1';
     const order = 1;
 
@@ -108,10 +83,10 @@ describe('POST /api/trainings/:id/exercises', () => {
         }
 
         Training.find({ _id: trainingId })
-          .then((trainings) => {
-            expect(trainings.length).toBe(1);
-            expect(trainings[0].exercises[0].name).toBe(name);
-            expect(trainings[0].exercises[0].series.length).toEqual(1);
+          .then((trainingsDocs) => {
+            expect(trainingsDocs.length).toBe(1);
+            expect(trainingsDocs[0].exercises[0].name).toBe(name);
+            expect(trainingsDocs[0].exercises[0].series.length).toEqual(1);
             done();
           })
           .catch(e => done(e));
@@ -134,7 +109,7 @@ describe('POST /api/trainings/:id/exercises', () => {
   });
 
   it('should not add exercise with invalid body data', (done) => {
-    const trainingId = trainingFixtures[1]._id.toHexString();
+    const trainingId = trainings[1]._id.toHexString();
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises`)
@@ -150,8 +125,8 @@ describe('POST /api/trainings/:id/exercises', () => {
         }
 
         Training.find({ _id: trainingId })
-          .then((trainings) => {
-            expect(trainings[0].exercises.length).toBe(0);
+          .then((trainingsDocs) => {
+            expect(trainingsDocs[0].exercises.length).toBe(0);
             done();
           })
           .catch(e => done(e));
@@ -176,8 +151,8 @@ describe('POST /api/trainings/:id/exercises', () => {
 
 describe('POST /api/trainings/:id/exercises/:id/series', () => {
   it('should create a new series', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
     const load = 30;
     const repetition = 3;
     const order = 1;
@@ -198,11 +173,11 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
         }
 
         Training.find({ _id: trainingId })
-          .then((trainings) => {
-            expect(trainings.length).toBe(1);
-            expect(trainings[0].exercises[0].series[1].load).toBe(load);
-            expect(trainings[0].exercises[0].series[1].order).toBe(order);
-            expect(trainings[0].exercises[0].series[1].repetition).toBe(repetition);
+          .then((trainingsDocs) => {
+            expect(trainingsDocs.length).toBe(1);
+            expect(trainingsDocs[0].exercises[0].series[1].load).toBe(load);
+            expect(trainingsDocs[0].exercises[0].series[1].order).toBe(order);
+            expect(trainingsDocs[0].exercises[0].series[1].repetition).toBe(repetition);
             done();
           })
           .catch(e => done(e));
@@ -210,8 +185,8 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
   });
 
   it('should not add series with invalid body data', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises/${exerciseId}/series`)
@@ -227,8 +202,8 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
         }
 
         Training.find({ _id: trainingId })
-          .then((trainings) => {
-            expect(trainings[0].exercises[0].series.length).toBe(1);
+          .then((trainingsDocs) => {
+            expect(trainingsDocs[0].exercises[0].series.length).toBe(1);
             done();
           })
           .catch(e => done(e));
@@ -236,7 +211,7 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
   });
 
   it('should not add series when invalid training ID is provided', (done) => {
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
 
     request(app)
       .post(`/api/trainings/${new ObjectID().toHexString()}/exercises/${exerciseId}/series`)
@@ -253,7 +228,7 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
   });
 
   it('should not add series when invalid exercise ID is provided', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises/${new ObjectID().toHexString()}/series`)
@@ -270,7 +245,7 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
   });
 
   it('should not add series when faulty exercise ID is provided', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises/random-string/series`)
@@ -302,10 +277,10 @@ describe('GET /api/trainings', () => {
 describe('GET /api/trainings/:trainingId', () => {
   it('should return training', (done) => {
     request(app)
-      .get(`/api/trainings/${trainingFixtures[0]._id.toHexString()}`)
+      .get(`/api/trainings/${trainings[0]._id.toHexString()}`)
       .expect(200)
       .expect((res) => {
-        expect(res.body.training.date).toBe(trainingFixtures[0].date);
+        expect(res.body.training.date).toBe(trainings[0].date);
       })
       .end(done);
   });
@@ -327,7 +302,7 @@ describe('GET /api/trainings/:trainingId', () => {
 
 describe('DELETE /api/trainings/:trainingId', () => {
   it('should remove a training', (done) => {
-    const trainingId = trainingFixtures[1]._id.toHexString();
+    const trainingId = trainings[1]._id.toHexString();
 
     request(app)
       .delete(`/api/trainings/${trainingId}`)
@@ -366,8 +341,8 @@ describe('DELETE /api/trainings/:trainingId', () => {
 
 describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId', () => {
   it('should remove an exercise', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
 
     request(app)
       .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}`)
@@ -390,7 +365,7 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId', () => {
   });
 
   it('should return 404 if exercise not found', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
 
     request(app)
       .delete(`/api/trainings/${trainingId}/exercises/${new ObjectID().toHexString()}`)
@@ -399,7 +374,7 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId', () => {
   });
 
   it('should return 404 if object id is invalid', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
 
     request(app)
       .delete(`/api/trainings/${trainingId}/exercises/random-string`)
@@ -410,9 +385,9 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId', () => {
 
 describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId', () => {
   it('should remove series', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
-    const seriesId = trainingFixtures[0].exercises[0].series[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+    const seriesId = trainings[0].exercises[0].series[0]._id.toHexString();
 
     request(app)
       .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${seriesId}`)
@@ -435,8 +410,8 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesI
   });
 
   it('should return 404 if series not found', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
 
     request(app)
       .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${new ObjectID().toHexString()}`)
@@ -445,8 +420,8 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesI
   });
 
   it('should return 404 if object id is invalid', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
 
     request(app)
       .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/random-string`)
@@ -457,7 +432,7 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesI
 
 describe('PATCH /api/trainings/:trainingId', () => {
   it('should update a training', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
     const date = 123123123;
 
     request(app)
@@ -487,8 +462,8 @@ describe('PATCH /api/trainings/:trainingId', () => {
 
 describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId', () => {
   it('should update an exercise', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
     const name = 'Exercise 123';
 
     request(app)
@@ -502,7 +477,7 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId', () => {
   });
 
   it('should return 404 when exercise not found', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/${new ObjectID().toHexString()}`)
@@ -511,7 +486,7 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId', () => {
   });
 
   it('should return 404 when invalid object id is provided', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/random-string`)
@@ -522,9 +497,9 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId', () => {
 
 describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId', () => {
   it('should update series', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
-    const seriesId = trainingFixtures[0].exercises[0].series[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+    const seriesId = trainings[0].exercises[0].series[0]._id.toHexString();
     const load = 1500;
 
     request(app)
@@ -538,8 +513,8 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId
   });
 
   it('should return 404 when series not found', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${new ObjectID().toHexString()}`)
@@ -548,8 +523,8 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId
   });
 
   it('should return 404 when invalid object id is provided', (done) => {
-    const trainingId = trainingFixtures[0]._id.toHexString();
-    const exerciseId = trainingFixtures[0].exercises[0]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/random-string`)
@@ -557,3 +532,152 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId
       .end(done);
   });
 });
+
+describe('GET /api/users/me', () => {
+  it('should return user if authenticated', (done) => {
+    request(app)
+      .get('/api/users/me')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body._id).toBe(users[0]._id.toHexString());
+        expect(res.body.email).toBe(users[0].email);
+      })
+      .end(done);
+  });
+
+  it('should return 401 if not authenticated', (done) => {
+    request(app)
+      .get('/api/users/me')
+      .expect(401)
+      .expect((res) => {
+        expect(res.body).toEqual({});
+      })
+      .end(done);
+  });
+});
+
+describe('POST /api/users', () => {
+  it('should create a user', (done) => {
+    const email = 'example@example.com';
+    const password = '123mnb!';
+
+    request(app)
+      .post('/api/users')
+      .send({ email, password })
+      .expect(200)
+      .expect((res) => {
+        expect(res.headers['x-auth']).toExist();
+        expect(res.body._id).toExist();
+        expect(res.body.email).toBe(email);
+      })
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        User.findOne({ email }).then((user) => {
+          expect(user).toExist();
+          expect(user.password).toNotBe(password);
+          done();
+        }).catch(e => done(e));
+      });
+  });
+
+  it('should return validation errors if request invalid', (done) => {
+    request(app)
+      .post('/api/users')
+      .send({
+        email: 'and',
+        password: '123',
+      })
+      .expect(400)
+      .end(done);
+  });
+
+  it('should not create user if email in use', (done) => {
+    request(app)
+      .post('/api/users')
+      .send({
+        email: users[0].email,
+        password: 'Password123!',
+      })
+      .expect(400)
+      .end(done);
+  });
+});
+
+describe('POST /api/users/login', () => {
+  it('should login user and return auth token', (done) => {
+    request(app)
+      .post('/api/users/login')
+      .send({
+        email: users[1].email,
+        password: users[1].password,
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.headers['x-auth']).toExist();
+      })
+      .end((err, res) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        User.findById(users[1]._id).then((user) => {
+          expect(user.tokens[1]).toInclude({
+            access: 'auth',
+            token: res.headers['x-auth'],
+          });
+          done();
+        }).catch(e => done(e));
+      });
+  });
+
+  it('should reject invalid login', (done) => {
+    request(app)
+      .post('/api/users/login')
+      .send({
+        email: users[1].email,
+        password: `${users[1].password}1`,
+      })
+      .expect(400)
+      .expect((res) => {
+        expect(res.headers['x-auth']).toNotExist();
+      })
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        User.findById(users[1]._id).then((user) => {
+          expect(user.tokens.length).toBe(1);
+          done();
+        }).catch(e => done(e));
+      });
+  });
+});
+
+describe('DELETE /users/me/token', () => {
+  it('should remove auth token on logout', (done) => {
+    request(app)
+      .delete('/api/users/me/token')
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(200)
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        User.findById(users[0]._id).then((user) => {
+          expect(user.tokens.length).toBe(0);
+          done();
+        }).catch(e => done(e));
+      });
+  });
+});
+
