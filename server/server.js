@@ -45,7 +45,7 @@ app.get('/api/', (req, res) => {
  */
 app.post('/api/trainings', authenticate, trainingRoutes.createTraining);
 app.get('/api/trainings/:trainingId', authenticate, trainingRoutes.getTraining);
-app.delete('/api/trainings/:trainingId', trainingRoutes.deleteTraining);
+app.delete('/api/trainings/:trainingId', authenticate, trainingRoutes.deleteTraining);
 app.patch('/api/trainings/:trainingId', trainingRoutes.updateTraining);
 
 app.post('/api/trainings/:trainingId/exercises', authenticate, trainingRoutes.createExercise);

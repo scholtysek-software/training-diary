@@ -425,6 +425,7 @@ describe('DELETE /api/trainings/:trainingId', () => {
 
     request(app)
       .delete(`/api/trainings/${trainingId}`)
+      .set('x-auth', users[1].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.training._id).toBe(trainingId);
@@ -446,6 +447,7 @@ describe('DELETE /api/trainings/:trainingId', () => {
   it('should return 404 if training not found', (done) => {
     request(app)
       .delete(`/api/trainings/${new ObjectID().toHexString()}`)
+      .set('x-auth', users[1].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -453,7 +455,23 @@ describe('DELETE /api/trainings/:trainingId', () => {
   it('should return 404 if object id is invalid', (done) => {
     request(app)
       .delete('/api/trainings/random-string')
+      .set('x-auth', users[1].tokens[0].token)
       .expect(404)
+      .end(done);
+  });
+
+  it('should not allow to delete someone else\'s training', (done) => {
+    request(app)
+      .delete(`/api/trainings/${trainings[1]._id.toHexString()}`)
+      .set('x-auth', users[0].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should not allow to delete a training without token', (done) => {
+    request(app)
+      .delete(`/api/trainings/${trainings[1]._id.toHexString()}`)
+      .expect(401)
       .end(done);
   });
 });
