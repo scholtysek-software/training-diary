@@ -552,6 +552,7 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesI
 
     request(app)
       .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${seriesId}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.training._id).toBe(trainingId);
@@ -576,6 +577,7 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesI
 
     request(app)
       .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${new ObjectID().toHexString()}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -586,7 +588,31 @@ describe('DELETE /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesI
 
     request(app)
       .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/random-string`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
+      .end(done);
+  });
+
+  it('should not delete someone else\'s series', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+    const seriesId = trainings[0].exercises[0].series[0]._id.toHexString();
+
+    request(app)
+      .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${seriesId}`)
+      .set('x-auth', users[1].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should not delete series without token', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+    const seriesId = trainings[0].exercises[0].series[0]._id.toHexString();
+
+    request(app)
+      .delete(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${seriesId}`)
+      .expect(401)
       .end(done);
   });
 });

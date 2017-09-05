@@ -154,12 +154,14 @@ const deleteSeries = (req, res) => {
     return res.status(404).send();
   }
 
-  Training.findById(trainingId)
+  Training.findOne({ _id: trainingId, creator: req.user._id.toHexString() })
     .then((training) => {
-      // @todo: Fix! Will fail if training is not found
-      const exercises = training.exercises.filter(ex => ex._id.toHexString() === exerciseId);
+      if (!training) {
+        return res.status(404).send();
+      }
 
-      if (!training || !exercises.length) {
+      const exercises = training.exercises.filter(ex => ex._id.toHexString() === exerciseId);
+      if (!exercises.length) {
         return res.status(404).send();
       }
 
