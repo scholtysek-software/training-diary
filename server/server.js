@@ -8,9 +8,10 @@ const cookieParser = require('cookie-parser');
 require('./config/config');
 require('./db/mongoose');
 const { authenticate } = require('./middleware/authenticate');
-
 const trainingRoutes = require('./routes/training');
 const userRoutes = require('./routes/user');
+
+const { version: appVersion } = require('./../package.json');
 
 const app = express();
 
@@ -36,7 +37,7 @@ app.get('/', (req, res) => {
 app.get('/api/', (req, res) => {
   res.send({
     name: 'Training Diary API',
-    version: '0.3.0',
+    version: appVersion,
   });
 });
 
