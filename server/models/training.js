@@ -38,6 +38,10 @@ const Training = mongoose.model('Training', mongoose.Schema({
   duration: {
     type: Number,
   },
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
 }));
 
 module.exports = { Training };

@@ -7,6 +7,7 @@ const _ = require('lodash');
 const createTraining = (req, res) => {
   const training = new Training({
     date: req.body.date,
+    creator: req.user._id,
   });
 
   training.save().then((doc) => {

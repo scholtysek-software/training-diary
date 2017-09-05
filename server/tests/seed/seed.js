@@ -27,7 +27,7 @@ const users = [{
 const trainings = [{
   _id: new ObjectID(),
   date: 1234,
-  _creator: userOneId,
+  creator: userOneId,
   exercises: [
     {
       _id: new ObjectID(),
@@ -45,7 +45,7 @@ const trainings = [{
 {
   _id: new ObjectID(),
   date: 12345,
-  _creator: userTwoId,
+  creator: userTwoId,
 }];
 
 const populateTrainings = (done) => {

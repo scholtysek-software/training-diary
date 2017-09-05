@@ -16,6 +16,7 @@ describe('POST /api/trainings', () => {
 
     request(app)
       .post('/api/trainings')
+      .set('x-auth', users[0].tokens[0].token)
       .send({ date })
       .expect(200)
       .expect((res) => {
@@ -41,6 +42,7 @@ describe('POST /api/trainings', () => {
   it('should not create training with invalid body data', (done) => {
     request(app)
       .post('/api/trainings')
+      .set('x-auth', users[1].tokens[0].token)
       .send({})
       .expect(400)
       .expect((res) => {
@@ -59,6 +61,16 @@ describe('POST /api/trainings', () => {
           })
           .catch(e => done(e));
       });
+  });
+
+  it('should restrict access to authenticated users only', (done) => {
+    const date = new Date().getTime();
+
+    request(app)
+      .post('/api/trainings')
+      .send({ date })
+      .expect(401)
+      .end(done);
   });
 });
 
