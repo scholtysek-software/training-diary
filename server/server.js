@@ -50,7 +50,7 @@ app.delete('/api/trainings/:trainingId', authenticate, trainingRoutes.deleteTrai
 app.patch('/api/trainings/:trainingId', trainingRoutes.updateTraining);
 
 app.post('/api/trainings/:trainingId/exercises', authenticate, trainingRoutes.createExercise);
-app.delete('/api/trainings/:trainingId/exercises/:exerciseId', trainingRoutes.deleteExercise);
+app.delete('/api/trainings/:trainingId/exercises/:exerciseId', authenticate, trainingRoutes.deleteExercise);
 app.patch('/api/trainings/:trainingId/exercises/:exerciseId', trainingRoutes.updateExercises);
 
 app.post('/api/trainings/:trainingId/exercises/:exerciseId/series', authenticate, trainingRoutes.createSeries);
