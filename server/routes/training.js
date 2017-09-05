@@ -189,8 +189,9 @@ const updateTraining = (req, res) => {
     return res.status(404).send();
   }
 
-  Training.findByIdAndUpdate(trainingId, { $set: body }, { new: true })
-    .then((training) => {
+  Training.findOneAndUpdate({ _id: trainingId, creator: req.user._id.toHexString() },
+    { $set: body },
+    { new: true }).then((training) => {
       if (!training) {
         return res.status(404).send();
       }

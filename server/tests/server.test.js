@@ -624,6 +624,7 @@ describe('PATCH /api/trainings/:trainingId', () => {
 
     request(app)
       .patch(`/api/trainings/${trainingId}`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({ date })
       .expect(200)
       .expect((res) => {
@@ -635,6 +636,7 @@ describe('PATCH /api/trainings/:trainingId', () => {
   it('should return 404 when training not found', (done) => {
     request(app)
       .patch(`/api/trainings/${new ObjectID().toHexString()}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -642,7 +644,31 @@ describe('PATCH /api/trainings/:trainingId', () => {
   it('should return 404 when invalid object id is provided', (done) => {
     request(app)
       .patch('/api/trainings/random-string')
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
+      .end(done);
+  });
+
+  it('should not update someone else\'s training', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const date = 123123123;
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}`)
+      .set('x-auth', users[1].tokens[0].token)
+      .send({ date })
+      .expect(404)
+      .end(done);
+  });
+
+  it('should not update training without token', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const date = 123123123;
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}`)
+      .send({ date })
+      .expect(401)
       .end(done);
   });
 });
