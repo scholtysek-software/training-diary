@@ -379,6 +379,7 @@ describe('GET /api/trainings/:trainingId', () => {
   it('should return training', (done) => {
     request(app)
       .get(`/api/trainings/${trainings[0]._id.toHexString()}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.training.date).toBe(trainings[0].date);
@@ -389,6 +390,7 @@ describe('GET /api/trainings/:trainingId', () => {
   it('should return 404 if training not found', (done) => {
     request(app)
       .get(`/api/trainings/${new ObjectID().toHexString()}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -396,7 +398,23 @@ describe('GET /api/trainings/:trainingId', () => {
   it('should return 404 for faulty ObjectId', (done) => {
     request(app)
       .get('/api/trainings/random-string')
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
+      .end(done);
+  });
+
+  it('should not return someone else\'s training', (done) => {
+    request(app)
+      .get(`/api/trainings/${trainings[0]._id.toHexString()}`)
+      .set('x-auth', users[1].tokens[0].token)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 401 trying to access endpoint without token', (done) => {
+    request(app)
+      .get(`/api/trainings/${trainings[0]._id.toHexString()}`)
+      .expect(401)
       .end(done);
   });
 });
