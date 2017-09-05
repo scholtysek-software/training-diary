@@ -210,7 +210,7 @@ const updateExercises = (req, res) => {
     return res.status(404).send();
   }
 
-  Training.findById(trainingId)
+  Training.findOne({ _id: trainingId, creator: req.user._id.toHexString() })
     .then((training) => {
       if (!training) {
         return res.status(404).send();

@@ -681,6 +681,7 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId', () => {
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({ name })
       .expect(200)
       .expect((res) => {
@@ -694,6 +695,7 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId', () => {
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/${new ObjectID().toHexString()}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -703,7 +705,33 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId', () => {
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/random-string`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
+      .end(done);
+  });
+
+  it('should not update an exercise from someone else', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+    const name = 'Exercise 123';
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}`)
+      .set('x-auth', users[1].tokens[0].token)
+      .send({ name })
+      .expect(404)
+      .end(done);
+  });
+
+  it('should not update an exercise without passing token', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+    const name = 'Exercise 123';
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}`)
+      .send({ name })
+      .expect(401)
       .end(done);
   });
 });
