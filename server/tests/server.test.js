@@ -210,6 +210,7 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises/${exerciseId}/series`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({ load, order, repetition })
       .expect(200)
       .expect((res) => {
@@ -241,6 +242,7 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises/${exerciseId}/series`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({})
       .expect(400)
       .expect((res) => {
@@ -266,6 +268,7 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
 
     request(app)
       .post(`/api/trainings/${new ObjectID().toHexString()}/exercises/${exerciseId}/series`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({})
       .expect(404)
       .end((err) => {
@@ -283,6 +286,7 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises/${new ObjectID().toHexString()}/series`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({})
       .expect(404)
       .end((err) => {
@@ -300,8 +304,46 @@ describe('POST /api/trainings/:id/exercises/:id/series', () => {
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises/random-string/series`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({})
       .expect(404)
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        done();
+      });
+  });
+
+  it('should return 404 when trying to modify someone else\'s training', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+
+    request(app)
+      .post(`/api/trainings/${trainingId}/exercises/${exerciseId}/series`)
+      .set('x-auth', users[1].tokens[0].token)
+      .send({})
+      .expect(404)
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        done();
+      });
+  });
+
+  it('should return 401 when trying to access without token', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+
+    request(app)
+      .post(`/api/trainings/${trainingId}/exercises/${exerciseId}/series`)
+      .send({})
+      .expect(401)
       .end((err) => {
         if (err) {
           done(err);
