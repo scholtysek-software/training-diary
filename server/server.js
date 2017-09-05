@@ -48,7 +48,7 @@ app.get('/api/trainings/:trainingId', trainingRoutes.getTraining);
 app.delete('/api/trainings/:trainingId', trainingRoutes.deleteTraining);
 app.patch('/api/trainings/:trainingId', trainingRoutes.updateTraining);
 
-app.post('/api/trainings/:trainingId/exercises', trainingRoutes.createExercise);
+app.post('/api/trainings/:trainingId/exercises', authenticate, trainingRoutes.createExercise);
 app.delete('/api/trainings/:trainingId/exercises/:exerciseId', trainingRoutes.deleteExercise);
 app.patch('/api/trainings/:trainingId/exercises/:exerciseId', trainingRoutes.updateExercises);
 
@@ -56,7 +56,7 @@ app.post('/api/trainings/:trainingId/exercises/:exerciseId/series', trainingRout
 app.delete('/api/trainings/:trainingId/exercises/:exerciseId/series/:seriesId', trainingRoutes.deleteSeries);
 app.patch('/api/trainings/:trainingId/exercises/:exerciseId/:series/:seriesId', trainingRoutes.updateSeries);
 
-app.get('/api/trainings', trainingRoutes.listTrainings);
+app.get('/api/trainings', authenticate, trainingRoutes.listTrainings);
 
 /**
  * User routes

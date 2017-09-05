@@ -82,6 +82,7 @@ describe('POST /api/trainings/:id/exercises', () => {
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({ name, order })
       .expect(200)
       .expect((res) => {
@@ -108,6 +109,7 @@ describe('POST /api/trainings/:id/exercises', () => {
   it('should not add exercise when faulty training ID is provided', (done) => {
     request(app)
       .post('/api/trainings/random-string/exercises')
+      .set('x-auth', users[0].tokens[0].token)
       .send({})
       .expect(404)
       .end((err) => {
@@ -121,14 +123,15 @@ describe('POST /api/trainings/:id/exercises', () => {
   });
 
   it('should not add exercise with invalid body data', (done) => {
-    const trainingId = trainings[1]._id.toHexString();
+    const trainingId = trainings[0]._id.toHexString();
 
     request(app)
       .post(`/api/trainings/${trainingId}/exercises`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({})
       .expect(400)
       .expect((res) => {
-        expect(res.body.error).toBe('Training validation failed: exercises.0.order: Path `order` is required., exercises.0.name: Path `name` is required.');
+        expect(res.body.error).toBe('Training validation failed: exercises.1.order: Path `order` is required., exercises.1.name: Path `name` is required.');
       })
       .end((err) => {
         if (err) {
@@ -138,7 +141,7 @@ describe('POST /api/trainings/:id/exercises', () => {
 
         Training.find({ _id: trainingId })
           .then((trainingsDocs) => {
-            expect(trainingsDocs[0].exercises.length).toBe(0);
+            expect(trainingsDocs[0].exercises.length).toBe(1);
             done();
           })
           .catch(e => done(e));
@@ -148,8 +151,44 @@ describe('POST /api/trainings/:id/exercises', () => {
   it('should not add exercise when invalid training ID is provided', (done) => {
     request(app)
       .post(`/api/trainings/${new ObjectID().toHexString()}/exercises`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({})
       .expect(404)
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        done();
+      });
+  });
+
+  it('should get 404 trying to access someone else\'s training', (done) => {
+    const trainingId = trainings[1]._id.toHexString();
+
+    request(app)
+      .post(`/api/trainings/${trainingId}/exercises`)
+      .set('x-auth', users[0].tokens[0].token)
+      .send({})
+      .expect(404)
+      .end((err) => {
+        if (err) {
+          done(err);
+          return;
+        }
+
+        done();
+      });
+  });
+
+  it('should get 401 trying to access without authentication', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+
+    request(app)
+      .post(`/api/trainings/${trainingId}/exercises`)
+      .send({})
+      .expect(401)
       .end((err) => {
         if (err) {
           done(err);
@@ -278,10 +317,18 @@ describe('GET /api/trainings', () => {
   it('should get all trainings', (done) => {
     request(app)
       .get('/api/trainings')
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.trainings.length).toBe(2);
       })
+      .end(done);
+  });
+
+  it('should restrict access to authenticated users only', (done) => {
+    request(app)
+      .get('/api/trainings')
+      .expect(401)
       .end(done);
   });
 });
