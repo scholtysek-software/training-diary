@@ -745,6 +745,7 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${seriesId}`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({ load })
       .expect(200)
       .expect((res) => {
@@ -759,6 +760,7 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${new ObjectID().toHexString()}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -769,7 +771,35 @@ describe('PATCH /api/trainings/:trainingId/exercise/:exerciseId/series/:seriesId
 
     request(app)
       .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/random-string`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
+      .end(done);
+  });
+
+  it('should not update series from someone else', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+    const seriesId = trainings[0].exercises[0].series[0]._id.toHexString();
+    const load = 1500;
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${seriesId}`)
+      .set('x-auth', users[1].tokens[0].token)
+      .send({ load })
+      .expect(404)
+      .end(done);
+  });
+
+  it('should not update series without token', (done) => {
+    const trainingId = trainings[0]._id.toHexString();
+    const exerciseId = trainings[0].exercises[0]._id.toHexString();
+    const seriesId = trainings[0].exercises[0].series[0]._id.toHexString();
+    const load = 1500;
+
+    request(app)
+      .patch(`/api/trainings/${trainingId}/exercises/${exerciseId}/series/${seriesId}`)
+      .send({ load })
+      .expect(401)
       .end(done);
   });
 });
