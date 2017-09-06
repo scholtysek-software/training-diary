@@ -8,8 +8,7 @@
     "test": "export NODE_ENV=test && mocha server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'",
     "test-cc": "export NODE_ENV=test && nyc -r html mocha server/**/*.test.js",
-    "build": "del-cli frontend/public/js/app && webpack --config frontend/webpack.config.dev.js --progress --profile --watch",
-    "watch": "nodemon server/server.js & del-cli frontend/public/js/app && webpack --config frontend/webpack.config.dev.js --progress --profile --watch"
+    "watch": "nodemon server/server.js"
   },
   "repository": {
     "type": "git",
@@ -30,22 +29,9 @@
   },
   "homepage": "https://github.com/scholtysek-software/training-diary-api#readme",
   "dependencies": {
-    "@angular/animations": "^4.0.0",
-    "@angular/common": "^4.0.0",
-    "@angular/compiler": "^4.0.0",
-    "@angular/compiler-cli": "^4.0.0",
-    "@angular/core": "^4.0.0",
-    "@angular/forms": "^4.0.0",
-    "@angular/http": "^4.0.0",
-    "@angular/platform-browser": "^4.0.0",
-    "@angular/platform-browser-dynamic": "^4.0.0",
-    "@angular/platform-server": "^4.0.0",
-    "@angular/router": "^4.0.0",
-    "@angular/upgrade": "^4.0.0",
     "bcryptjs": "2.4.3",
     "body-parser": "1.17.2",
     "cookie-parser": "~1.4.3",
-    "core-js": "^2.4.1",
     "express": "4.15.4",
     "hbs": "~3.1.0",
     "jsonwebtoken": "7.4.3",
@@ -53,31 +39,17 @@
     "mongodb": "2.2.31",
     "mongoose": "4.11.7",
     "morgan": "~1.6.1",
-    "rxjs": "^5.2.0",
     "serve-favicon": "~2.3.0",
-    "validator": "8.1.0",
-    "zone.js": "^0.8.5"
+    "validator": "8.1.0"
   },
   "devDependencies": {
-    "@types/core-js": "0.9.36",
-    "@types/node": "^6.0.45",
-    "angular-router-loader": "^0.5.0",
-    "angular2-template-loader": "^0.5.0",
-    "awesome-typescript-loader": "^3.1.2",
-    "del-cli": "^0.2.0",
     "eslint": "3.18.0",
     "eslint-config-airbnb-base": "11.1.2",
     "eslint-plugin-import": "2.2.0",
     "expect": "1.20.2",
-    "html-loader": "^0.4.4",
     "mocha": "3.5.0",
     "nodemon": "1.11.0",
     "nyc": "11.1.0",
-    "raw-loader": "^0.5.1",
-    "supertest": "3.0.0",
-    "ts-loader": "^2.0.3",
-    "typescript": "^2.1.4",
-    "webpack": "^2.2.1",
-    "webpack-merge": "^4.1.0"
+    "supertest": "3.0.0"
   }
 }
