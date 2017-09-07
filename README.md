@@ -1,2 +1,2 @@
-# training-diary-api
-Training diary API for saving information about your progress
+# Training Diary
+Application for saving information about your challenges and monitor progress. 
