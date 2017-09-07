@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-// const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 
@@ -20,7 +19,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 app.set('view options', { layout: 'layout' });
 
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 if (process.env.NODE_ENV !== 'test') {
   app.use(logger('dev'));
 }
