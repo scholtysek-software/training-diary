@@ -33,6 +33,10 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+app.get('/trainings', (req, res) => {
+  res.render('trainings');
+});
+
 app.get('/api/', (req, res) => {
   res.send({
     name: 'Training Diary API',
