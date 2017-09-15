@@ -32,13 +32,13 @@
     "bcryptjs": "2.4.3",
     "body-parser": "1.17.2",
     "cookie-parser": "~1.4.3",
+    "cors": "2.8.4",
     "express": "4.15.4",
-    "hbs": "~3.1.0",
     "jsonwebtoken": "7.4.3",
     "lodash": "4.17.4",
     "mongodb": "2.2.31",
     "mongoose": "4.11.7",
-    "morgan": "~1.6.1",
+    "morgan": "1.6.1",
     "validator": "8.1.0"
   },
   "devDependencies": {

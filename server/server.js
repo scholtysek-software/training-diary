@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 require('./config/config');
 require('./db/mongoose');
@@ -14,28 +15,14 @@ const { version: appVersion } = require('./../package.json');
 
 const app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
-app.set('view options', { layout: 'layout' });
-
 if (process.env.NODE_ENV !== 'test') {
   app.use(logger('dev'));
 }
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'public')));
-
-app.use(bodyParser.json());
-
-app.get('/', (req, res) => {
-  res.render('index');
-});
-
-app.get('/trainings', (req, res) => {
-  res.render('trainings');
-});
+app.use(express.static(path.join(__dirname, '..', 'dist')));
 
 app.get('/api/', (req, res) => {
   res.send({
@@ -69,9 +56,6 @@ app.post('/api/users', userRoutes.createUser);
 app.get('/api/users/me', authenticate, userRoutes.getUser);
 app.post('/api/users/login', userRoutes.login);
 app.delete('/api/users/me/token', authenticate, userRoutes.deleteToken);
-
-// catch 404 and forward to error handler
-app.use((req, res) => res.render('index'));
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is waiting for the connection on port ${process.env.PORT}`);
