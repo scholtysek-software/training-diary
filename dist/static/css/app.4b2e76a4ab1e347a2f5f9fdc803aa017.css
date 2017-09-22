@@ -247,6 +247,8 @@
 
 
 
+
+
 .moving-arrow {
   border-right: 17px solid #f4f3ef;
   border-top: 17px solid transparent;
@@ -257,6 +259,15 @@
   top: 95px;
   transition: all 0.5s cubic-bezier(0.29, 1.42, 0.79, 1);
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -980,7 +991,7 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
-.sign-in a {
+.sign-in .footer .copyright a {
   color: #FFFFFF;
 }
 .full-page .content {
@@ -988,9 +999,6 @@
 }
 .footer .copyright {
   color: #eeeeee;
-}
-.footer .copyright a {
-  color: #FFFFFF;
 }
 .card-header, .card-content {
   padding: 2px 15px 10px;
@@ -1018,6 +1026,43 @@
 }
 .forgot a {
   color: #165265;
+}
+.sign-in .form-control {
+  background-color: #F3F2EE;
+}
+.sign-in .is-error {
+  border: 1px solid #B33C12;
+}
+
+
+.sign-up {
+  background-image: url("/static/img/StockSnap_9D4KMEDO84.jpg");
+  position: relative;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.full-page .content {
+  min-height: calc(100vh - 70px);
+}
+.content {
+  padding-top: 20vh;
+}
+@media (max-width: 991px) {
+.wrapper {
+    background-color: inherit !important;
+}
+}
+.navbar.navbar-absolute {
+  position: absolute;
+  width: 100%;
+  z-index: 1030;
+}
+.sign-up .form-control {
+  background-color: #F3F2EE;
+}
+.sign-up .is-error {
+  border: 1px solid #B33C12;
 }
 
 /*!
@@ -10806,4 +10851,4 @@ textarea.form-control {
     -ms-overflow-style: -ms-autohiding-scrollbar;
     -webkit-overflow-scrolling: touch; } }
 
-/*# sourceMappingURL=app.db75f4c1d7dbeffed10711ffc7f7f7ba.css.map*/
+/*# sourceMappingURL=app.4b2e76a4ab1e347a2f5f9fdc803aa017.css.map*/
