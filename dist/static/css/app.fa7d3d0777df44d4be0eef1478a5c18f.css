@@ -368,6 +368,9 @@
 
 
 
+
+
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity .1s
@@ -888,101 +891,19 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.md-12 {
+  font-size: 12px;
+}
+svg {
+  top: 0;
+  left: 0;
+  margin-bottom: -8px;
+}
+line {
+  opacity: 0.7;
+  stroke: #777;
+  stroke-width: 2px;
+}
 
 .sign-in {
   background-image: url("/static/img/StockSnap_37CB0NNMNC.jpg");
@@ -10851,4 +10772,4 @@ textarea.form-control {
     -ms-overflow-style: -ms-autohiding-scrollbar;
     -webkit-overflow-scrolling: touch; } }
 
-/*# sourceMappingURL=app.4b2e76a4ab1e347a2f5f9fdc803aa017.css.map*/
+/*# sourceMappingURL=app.fa7d3d0777df44d4be0eef1478a5c18f.css.map*/
