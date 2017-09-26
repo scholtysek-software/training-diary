@@ -362,7 +362,7 @@ describe('GET /api/trainings', () => {
       .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
-        expect(res.body.trainings.length).toBe(2);
+        expect(res.body.trainings.length).toBe(1);
       })
       .end(done);
   });
