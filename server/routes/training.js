@@ -70,7 +70,7 @@ const createSeries = (req, res) => {
 };
 
 const listTrainings = (req, res) => {
-  Training.find({ creator: req.user._id })
+  Training.find({ creator: req.user._id }).sort({ date: -1 })
     .then((trainings) => {
       res.send({ trainings });
     })
